@@ -252,6 +252,10 @@ const DateConverter = () => {
                         highlight
                       />
                       <ResultRow
+                        label="Short Format"
+                        value={`${convertedADDate.getMonth() + 1}/${convertedADDate.getDate()}/${convertedADDate.getFullYear()}`}
+                      />
+                      <ResultRow
                         label="ISO Format"
                         value={`${convertedADDate.getFullYear()}-${String(
                           convertedADDate.getMonth() + 1
