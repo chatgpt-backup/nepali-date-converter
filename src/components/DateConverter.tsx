@@ -1,87 +1,49 @@
 import { useState } from "react";
 import NepaliDate from "nepali-date-converter";
 import { Calendar, ArrowRight, Sun, Moon } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-type ConversionMode = "BS-AD" | "AD-BS";
 
 const DateConverter = () => {
-  const [conversionMode, setConversionMode] = useState<ConversionMode>("BS-AD");
+  const [conversionMode, setConversionMode] = useState<"BS-AD" | "AD-BS">("BS-AD");
   const [bsYear, setBsYear] = useState(2081);
   const [bsMonth, setBsMonth] = useState(8);
   const [bsDate, setBsDate] = useState(19);
-  const [adYear, setAdYear] = useState(new Date().getFullYear());
-  const [adMonth, setAdMonth] = useState(new Date().getMonth());
-  const [adDay, setAdDay] = useState(new Date().getDate());
+  const [adYear, setAdYear] = useState(2024);
+  const [adMonth, setAdMonth] = useState(11);
+  const [adDay, setAdDay] = useState(4);
 
   const nepaliMonths = [
-    "Baisakh",
-    "Jestha",
-    "Asar",
-    "Shrawan",
-    "Bhadra",
-    "Aswin",
-    "Kartik",
-    "Mangsir",
-    "Poush",
-    "Magh",
-    "Falgun",
-    "Chaitra",
+    "Baisakh", "Jestha", "Asar", "Shrawan", "Bhadra", "Aswin",
+    "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"
   ];
 
   const nepaliMonthsNp = [
-    "बैशाख",
-    "जेष्ठ",
-    "आषाढ",
-    "श्रावण",
-    "भाद्र",
-    "आश्विन",
-    "कार्तिक",
-    "मंसिर",
-    "पौष",
-    "माघ",
-    "फाल्गुण",
-    "चैत्र",
+    "बैशाख", "जेष्ठ", "आषाढ", "श्रावण", "भाद्र", "आश्विन",
+    "कार्तिक", "मंसिर", "पौष", "माघ", "फाल्गुण", "चैत्र"
   ];
 
   const englishMonths = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
 
   const weekDays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
   ];
 
   const getADFromBS = (): Date => {
     try {
       const nepaliDate = new NepaliDate(bsYear, bsMonth, bsDate);
       return nepaliDate.toJsDate();
-    } catch (error) {
+    } catch {
       return new Date();
     }
   };
 
   const getBSFromAD = (): NepaliDate => {
     try {
-      return NepaliDate.fromAD(new Date(adYear, adMonth, adDay));
-    } catch (error) {
+      const date = new Date(adYear, adMonth, adDay);
+      return NepaliDate.fromAD(date);
+    } catch {
       return new NepaliDate();
     }
   };
@@ -89,309 +51,255 @@ const DateConverter = () => {
   const convertedADDate = getADFromBS();
   const convertedBSDate = getBSFromAD();
 
-
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-terracotta/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 container mx-auto px-4 py-8 md:py-16">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-2xl">
         {/* Header */}
-        <header className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="p-3 bg-gradient-warm rounded-2xl shadow-glow">
-              <Calendar className="w-8 h-8 text-primary-foreground" />
-            </div>
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 shadow-lg shadow-orange-500/30 mb-4">
+            <Calendar className="w-8 h-8 text-white" />
           </div>
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-800 tracking-tight">
             Date Converter
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground font-light">
-            <span className="text-gradient font-medium">Bikram Sambat</span>
-            <span className="mx-3 text-primary">⇄</span>
-            <span className="text-gradient font-medium">Anno Domini</span>
+          <p className="text-stone-500 mt-2 text-sm sm:text-base">
+            Bikram Sambat ⇄ Anno Domini
           </p>
-        </header>
+        </div>
 
         {/* Main Card */}
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-card rounded-3xl shadow-medium border border-border/50 overflow-hidden animate-slide-up">
-            {/* Mode Toggle */}
-            <div className="p-2 bg-muted/50">
-              <div className="flex gap-2">
-                <ModeButton
-                  active={conversionMode === "BS-AD"}
-                  onClick={() => setConversionMode("BS-AD")}
-                  icon={<Sun className="w-4 h-4" />}
-                  label="BS → AD"
-                  sublabel="विक्रम संवत् to Gregorian"
-                />
-                <ModeButton
-                  active={conversionMode === "AD-BS"}
-                  onClick={() => setConversionMode("AD-BS")}
-                  icon={<Moon className="w-4 h-4" />}
-                  label="AD → BS"
-                  sublabel="Gregorian to विक्रम संवत्"
-                />
-              </div>
-            </div>
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-orange-900/10 border border-orange-100 overflow-hidden">
+          {/* Mode Toggle */}
+          <div className="flex border-b border-orange-100">
+            <button
+              onClick={() => setConversionMode("BS-AD")}
+              className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-medium transition-all duration-300 ${
+                conversionMode === "BS-AD"
+                  ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg"
+                  : "text-stone-500 hover:text-stone-700 hover:bg-orange-50"
+              }`}
+            >
+              <Sun className="w-4 h-4" />
+              <span>BS → AD</span>
+            </button>
+            <button
+              onClick={() => setConversionMode("AD-BS")}
+              className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 font-medium transition-all duration-300 ${
+                conversionMode === "AD-BS"
+                  ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg"
+                  : "text-stone-500 hover:text-stone-700 hover:bg-orange-50"
+              }`}
+            >
+              <Moon className="w-4 h-4" />
+              <span>AD → BS</span>
+            </button>
+          </div>
 
-            <div className="p-6 md:p-8">
-              {/* Input Section */}
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    {conversionMode === "BS-AD" ? "Input (BS)" : "Input (AD)"}
-                  </h2>
-                </div>
+          <div className="p-6 sm:p-8 space-y-8">
+            {/* Input Section */}
+            <div>
+              <h2 className="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-4">
+                {conversionMode === "BS-AD" ? "Input (BS)" : "Input (AD)"}
+              </h2>
 
-                {conversionMode === "BS-AD" ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <InputField
-                      label="Year (वर्ष)"
+              {conversionMode === "BS-AD" ? (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-stone-600">
+                      Year (वर्ष)
+                    </label>
+                    <input
                       type="number"
                       value={bsYear}
                       onChange={(e) => setBsYear(parseInt(e.target.value) || 2081)}
-                      min={1970}
-                      max={2100}
+                      min="1970"
+                      max="2100"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-orange-100 bg-orange-50/50 text-stone-800 font-medium focus:border-orange-400 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
                     />
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-foreground">
-                        Month (महिना)
-                      </label>
-                      <select
-                        value={bsMonth}
-                        onChange={(e) => setBsMonth(parseInt(e.target.value))}
-                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none cursor-pointer"
-                      >
-                        {nepaliMonths.map((month, index) => (
-                          <option key={index} value={index} className="bg-card text-foreground">
-                            {month} ({nepaliMonthsNp[index]})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <InputField
-                      label="Date (मिति)"
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-stone-600">
+                      Month (महिना)
+                    </label>
+                    <select
+                      value={bsMonth}
+                      onChange={(e) => setBsMonth(parseInt(e.target.value))}
+                      className="w-full px-4 py-3 rounded-xl border-2 border-orange-100 bg-orange-50/50 text-stone-800 font-medium focus:border-orange-400 focus:ring-4 focus:ring-orange-100 outline-none transition-all cursor-pointer"
+                    >
+                      {nepaliMonths.map((month, index) => (
+                        <option key={index} value={index}>
+                          {month} ({nepaliMonthsNp[index]})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-stone-600">
+                      Date (मिति)
+                    </label>
+                    <input
                       type="number"
                       value={bsDate}
                       onChange={(e) => setBsDate(parseInt(e.target.value) || 1)}
-                      min={1}
-                      max={32}
+                      min="1"
+                      max="32"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-orange-100 bg-orange-50/50 text-stone-800 font-medium focus:border-orange-400 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
                     />
                   </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <InputField
-                      label="Year"
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-stone-600">
+                      Year
+                    </label>
+                    <input
                       type="number"
                       value={adYear}
-                      onChange={(e) => setAdYear(parseInt(e.target.value) || new Date().getFullYear())}
-                      min={1944}
-                      max={2043}
+                      onChange={(e) => setAdYear(parseInt(e.target.value) || 2024)}
+                      min="1913"
+                      max="2043"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-orange-100 bg-orange-50/50 text-stone-800 font-medium focus:border-orange-400 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
                     />
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-foreground">
-                        Month
-                      </label>
-                      <select
-                        value={adMonth}
-                        onChange={(e) => setAdMonth(parseInt(e.target.value))}
-                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none cursor-pointer"
-                      >
-                        {englishMonths.map((month, index) => (
-                          <option key={index} value={index} className="bg-card text-foreground">
-                            {month}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <InputField
-                      label="Date"
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-stone-600">
+                      Month
+                    </label>
+                    <select
+                      value={adMonth}
+                      onChange={(e) => setAdMonth(parseInt(e.target.value))}
+                      className="w-full px-4 py-3 rounded-xl border-2 border-orange-100 bg-orange-50/50 text-stone-800 font-medium focus:border-orange-400 focus:ring-4 focus:ring-orange-100 outline-none transition-all cursor-pointer"
+                    >
+                      {englishMonths.map((month, index) => (
+                        <option key={index} value={index}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-stone-600">
+                      Day
+                    </label>
+                    <input
                       type="number"
                       value={adDay}
                       onChange={(e) => setAdDay(parseInt(e.target.value) || 1)}
-                      min={1}
-                      max={31}
+                      min="1"
+                      max="31"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-orange-100 bg-orange-50/50 text-stone-800 font-medium focus:border-orange-400 focus:ring-4 focus:ring-orange-100 outline-none transition-all"
                     />
                   </div>
-                )}
-              </div>
-
-              {/* Arrow Divider */}
-              <div className="flex items-center justify-center my-6">
-                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-                <div className="mx-4 p-2 bg-primary rounded-full shadow-glow animate-pulse">
-                  <ArrowRight className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-              </div>
+              )}
+            </div>
 
-              {/* Result Section */}
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full bg-accent" />
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    {conversionMode === "BS-AD" ? "Result (AD)" : "Result (BS)"}
-                  </h2>
-                </div>
-
-                <div className="bg-gradient-subtle rounded-2xl border border-border/50 p-6 space-y-4">
-                  {conversionMode === "BS-AD" ? (
-                    <>
-                      <ResultRow
-                        label="Full Date"
-                        value={`${weekDays[convertedADDate.getDay()]}, ${
-                          englishMonths[convertedADDate.getMonth()]
-                        } ${convertedADDate.getDate()}, ${convertedADDate.getFullYear()}`}
-                        highlight
-                      />
-                      <ResultRow
-                        label="Short Format"
-                        value={`${convertedADDate.getMonth() + 1}/${convertedADDate.getDate()}/${convertedADDate.getFullYear()}`}
-                      />
-                      <ResultRow
-                        label="ISO Format"
-                        value={`${convertedADDate.getFullYear()}-${String(
-                          convertedADDate.getMonth() + 1
-                        ).padStart(2, "0")}-${String(convertedADDate.getDate()).padStart(
-                          2,
-                          "0"
-                        )}`}
-                      />
-                      <div className="grid grid-cols-2 gap-4 pt-2">
-                        <StatBox label="Day" value={String(convertedADDate.getDate())} />
-                        <StatBox
-                          label="Weekday"
-                          value={weekDays[convertedADDate.getDay()].slice(0, 3)}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <ResultRow
-                        label="Full Date (English)"
-                        value={convertedBSDate.format("ddd, DD MMMM YYYY")}
-                        highlight
-                      />
-                      <ResultRow
-                        label="Full Date (Nepali)"
-                        value={convertedBSDate.format("ddd, DD MMMM YYYY", "np")}
-                      />
-                      <ResultRow
-                        label="Nepali Format"
-                        value={convertedBSDate.format("YYYY/MM/DD")}
-                      />
-                      <div className="grid grid-cols-2 gap-4 pt-2">
-                        <StatBox label="Year" value={String(convertedBSDate.getYear())} />
-                        <StatBox
-                          label="Month"
-                          value={nepaliMonths[convertedBSDate.getMonth()].slice(0, 3)}
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
+            {/* Divider with Arrow */}
+            <div className="flex items-center justify-center">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-orange-200 to-transparent"></div>
+              <div className="mx-4 w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
+                <ArrowRight className="w-5 h-5 text-white" />
               </div>
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-orange-200 to-transparent"></div>
+            </div>
+
+            {/* Result Section */}
+            <div>
+              <h2 className="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-4">
+                {conversionMode === "BS-AD" ? "Result (AD)" : "Result (BS)"}
+              </h2>
+
+              {conversionMode === "BS-AD" ? (
+                <div className="space-y-3">
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white">
+                    <p className="text-xs uppercase tracking-wider text-orange-100 mb-1">
+                      Full Date
+                    </p>
+                    <p className="text-lg sm:text-xl font-semibold">
+                      {weekDays[convertedADDate.getDay()]},{" "}
+                      {englishMonths[convertedADDate.getMonth()]}{" "}
+                      {convertedADDate.getDate()}, {convertedADDate.getFullYear()}
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-orange-50 border border-orange-100">
+                    <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">
+                      Short Format
+                    </p>
+                    <p className="text-lg font-semibold text-stone-700">
+                      {convertedADDate.getMonth() + 1}/{convertedADDate.getDate()}/{convertedADDate.getFullYear()}
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-orange-50 border border-orange-100">
+                    <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">
+                      ISO Format
+                    </p>
+                    <p className="text-lg font-semibold text-stone-700">
+                      {convertedADDate.getFullYear()}-
+                      {String(convertedADDate.getMonth() + 1).padStart(2, "0")}-
+                      {String(convertedADDate.getDate()).padStart(2, "0")}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-4 rounded-xl bg-stone-800 text-white text-center">
+                      <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">Day</p>
+                      <p className="text-2xl font-bold">{convertedADDate.getDate()}</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-stone-800 text-white text-center">
+                      <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">Weekday</p>
+                      <p className="text-2xl font-bold">{weekDays[convertedADDate.getDay()].slice(0, 3)}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white">
+                    <p className="text-xs uppercase tracking-wider text-orange-100 mb-1">
+                      Full Date (English)
+                    </p>
+                    <p className="text-lg sm:text-xl font-semibold">
+                      {convertedBSDate.format("ddd, DD MMMM YYYY")}
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-orange-50 border border-orange-100">
+                    <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">
+                      Full Date (Nepali)
+                    </p>
+                    <p className="text-lg font-semibold text-stone-700">
+                      {convertedBSDate.format("ddd, DD MMMM YYYY", "np")}
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-orange-50 border border-orange-100">
+                    <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">
+                      Nepali Format
+                    </p>
+                    <p className="text-lg font-semibold text-stone-700">
+                      {convertedBSDate.format("YYYY/MM/DD")}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-4 rounded-xl bg-stone-800 text-white text-center">
+                      <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">Year</p>
+                      <p className="text-2xl font-bold">{convertedBSDate.getYear()}</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-stone-800 text-white text-center">
+                      <p className="text-xs uppercase tracking-wider text-stone-400 mb-1">Month</p>
+                      <p className="text-2xl font-bold">{nepaliMonths[convertedBSDate.getMonth()].slice(0, 3)}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-
-          {/* Footer */}
-          <p className="text-center text-sm text-muted-foreground mt-8 animate-fade-in">
-            Built with ❤️ for the Nepali community
-          </p>
         </div>
+
+        {/* Footer */}
+        <p className="text-center text-stone-400 text-sm mt-6">
+          Built with precision for accurate date conversions
+        </p>
       </div>
     </div>
   );
 };
-
-interface ModeButtonProps {
-  active: boolean;
-  onClick: () => void;
-  icon: React.ReactNode;
-  label: string;
-  sublabel: string;
-}
-
-const ModeButton = ({ active, onClick, icon, label, sublabel }: ModeButtonProps) => (
-  <button
-    onClick={onClick}
-    className={cn(
-      "flex-1 flex items-center justify-center gap-3 px-4 py-3 rounded-xl transition-all duration-300",
-      active
-        ? "bg-gradient-warm text-primary-foreground shadow-glow"
-        : "bg-transparent text-muted-foreground hover:bg-secondary/50"
-    )}
-  >
-    {icon}
-    <div className="text-left">
-      <div className="font-semibold text-sm">{label}</div>
-      <div className={cn("text-xs", active ? "text-primary-foreground/80" : "text-muted-foreground")}>
-        {sublabel}
-      </div>
-    </div>
-  </button>
-);
-
-interface InputFieldProps {
-  label: string;
-  type: string;
-  value: number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  min?: number;
-  max?: number;
-}
-
-const InputField = ({ label, type, value, onChange, min, max }: InputFieldProps) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-foreground">{label}</label>
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      min={min}
-      max={max}
-      className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
-    />
-  </div>
-);
-
-interface ResultRowProps {
-  label: string;
-  value: string;
-  highlight?: boolean;
-}
-
-const ResultRow = ({ label, value, highlight }: ResultRowProps) => (
-  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-    <span className="text-sm text-muted-foreground">{label}</span>
-    <span
-      className={cn(
-        "font-medium",
-        highlight ? "text-lg md:text-xl text-gradient font-display" : "text-foreground"
-      )}
-    >
-      {value}
-    </span>
-  </div>
-);
-
-interface StatBoxProps {
-  label: string;
-  value: string;
-}
-
-const StatBox = ({ label, value }: StatBoxProps) => (
-  <div className="bg-card rounded-xl p-4 text-center border border-border/50">
-    <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</div>
-    <div className="text-2xl font-display font-bold text-foreground">{value}</div>
-  </div>
-);
 
 export default DateConverter;
