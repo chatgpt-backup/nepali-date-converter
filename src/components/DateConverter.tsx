@@ -10,7 +10,9 @@ const DateConverter = () => {
   const [bsYear, setBsYear] = useState(2081);
   const [bsMonth, setBsMonth] = useState(8);
   const [bsDate, setBsDate] = useState(19);
-  const [adDate, setAdDate] = useState(new Date());
+  const [adYear, setAdYear] = useState(new Date().getFullYear());
+  const [adMonth, setAdMonth] = useState(new Date().getMonth());
+  const [adDay, setAdDay] = useState(new Date().getDate());
 
   const nepaliMonths = [
     "Baisakh",
@@ -78,7 +80,7 @@ const DateConverter = () => {
 
   const getBSFromAD = (): NepaliDate => {
     try {
-      return NepaliDate.fromAD(adDate);
+      return NepaliDate.fromAD(new Date(adYear, adMonth, adDay));
     } catch (error) {
       return new NepaliDate();
     }
@@ -87,16 +89,6 @@ const DateConverter = () => {
   const convertedADDate = getADFromBS();
   const convertedBSDate = getBSFromAD();
 
-  const handleADDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAdDate(new Date(e.target.value));
-  };
-
-  const formatADDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -194,15 +186,38 @@ const DateConverter = () => {
                     />
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-foreground">
-                      Select Date
-                    </label>
-                    <input
-                      type="date"
-                      value={formatADDate(adDate)}
-                      onChange={handleADDateChange}
-                      className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200"
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <InputField
+                      label="Year"
+                      type="number"
+                      value={adYear}
+                      onChange={(e) => setAdYear(parseInt(e.target.value) || new Date().getFullYear())}
+                      min={1944}
+                      max={2043}
+                    />
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-foreground">
+                        Month
+                      </label>
+                      <select
+                        value={adMonth}
+                        onChange={(e) => setAdMonth(parseInt(e.target.value))}
+                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 appearance-none cursor-pointer"
+                      >
+                        {englishMonths.map((month, index) => (
+                          <option key={index} value={index} className="bg-card text-foreground">
+                            {month}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <InputField
+                      label="Date"
+                      type="number"
+                      value={adDay}
+                      onChange={(e) => setAdDay(parseInt(e.target.value) || 1)}
+                      min={1}
+                      max={31}
                     />
                   </div>
                 )}
